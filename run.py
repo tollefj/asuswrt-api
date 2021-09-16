@@ -8,8 +8,11 @@ import atexit
 
 from router_config import AsusRouter
 from hue import Hue
+from speech import TTS
 
 import time
+
+tts = TTS()
 
 from enum import IntEnum
 
@@ -45,7 +48,7 @@ def root():
   print(arg['name'])
   return request.query_string
   
-@app.route('/client/', methods=GET)
+@app.route('/clients/', methods=GET)
 def clients():
   return jsonify([c.values() for c in router.clients()])
 
@@ -62,11 +65,6 @@ def rooms():
 def room_lights(room_id=1):
   return jsonify(hue.get_lights_in_room_by_name(int(room_id)))
   return jsonify("ok")
-
-@app.route('/kill', methods=GET)
-def kill():
-  toggler.kill()
-
 
 if __name__ == '__main__':
   phones = ['Kristinone11Pro', 'Kristinplewatch', 'Tollefphone']
