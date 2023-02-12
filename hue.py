@@ -8,22 +8,58 @@ OFF = False
 def onoff(state):
   return 'ON' if state else 'OFF'
 
+
+class Light:
+  def __init__(self, light_object):
+    pass
+
+class Room:
+  # initialize with Bridge.get_group(id)
+  def __init__(self, id, group):
+    self.id = id
+    self.name = group.get('name')
+    self.lights = group.get('lights')
+    self.sensors = group.get('sensors')
+    self.all_on = group.get('state').get('all_on')
+    self.any_on = group.get('state').get('any_on')
+
+  def init_lights(self):
+    pass
+
+
+  def get_name(self):
+    return self.obj.get('name').lower()
+
+  def toggle(self, state):
+    print('set lights {}'.format(state))
+
+  on = lambda self: self.toggle(True)
+  off = lambda self: self.toggle(False)
+
+  def __str__(self):
+    return '{} - {}'.format(self.id, self.obj.get('name'))
+
 class Hue:
   def __init__(self, ip):
     self.b = Bridge(ip)
     self.rooms = []
     self.lights = {}
 
-    self.init_valid_groups()
+    self.update_rooms()
+    print('rooms', self.rooms)
     self.update_lights()
 
-  def init_valid_groups(self):
+  def update_rooms(self):
     groups = self.b.get_group()
     valid_names = "Gangen Kjøkken Stua Soverommet Kontoret".split(" ")
+
     rooms = []
     for group_id, group_data in self.b.get_group().items():
       if group_data['name'] in valid_names:
-        rooms.append(int(group_id))
+        room = Room(group_id, group_data)
+        print(room)
+        room.on()
+        rooms.append(room)
 
     self.rooms = rooms
 
@@ -37,9 +73,9 @@ class Hue:
     return parsed_rooms
 
   def find_room(self, name):
-    for room in self.rooms:  # list over valid rooms
-      if name.lower() in self.b.get_group(room, 'name').lower():
-        print('Found room id: {}'.format(room))
+    for room in self.rooms:
+      if name.lower() in room.get_name():
+        print('Found room: {}'.format(room))
         return room
     print('Found no room based on the name: {}'.format(name))
     return None

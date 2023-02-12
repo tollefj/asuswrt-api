@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
   scheduler = BackgroundScheduler()
   try:
-    scheduler.add_job(func=tollef_in_office, trigger='interval', seconds=2, id='1')
+    # scheduler.add_job(func=tollef_in_office, trigger='interval', seconds=2, id='1')
     # scheduler.add_job(func=kristine_is_somewhere, trigger='interval', seconds=3, id='2')
 
     scheduler.start()
